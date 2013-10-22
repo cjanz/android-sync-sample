@@ -29,7 +29,7 @@ public class LoginActivity extends AccountAuthenticatorActivity implements
 		AuthenticationResultHandler {
 
 	private static final String CONTENT_AUTHORITY = TodoContentProvider.AUTHORITY;
-	private static final String ACCOUNT_TYPE = "de.bit.android.sample.account";
+	public static final String ACCOUNT_TYPE = "de.bit.android.sample.account";
 	public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 
 	private EditText usernameEdit;

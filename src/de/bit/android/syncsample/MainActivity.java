@@ -1,12 +1,17 @@
 package de.bit.android.syncsample;
 
+import static de.bit.android.syncsample.authenticator.LoginActivity.*;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SimpleCursorAdapter;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
@@ -20,11 +25,18 @@ public class MainActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	private SimpleCursorAdapter adapter;
+	private Account account;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		Account[] accounts = AccountManager.get(this).getAccountsByType(
+				ACCOUNT_TYPE);
+		if (accounts.length > 0) {
+			account = accounts[0];
+		}
 
 		fillData();
 	}
@@ -34,6 +46,22 @@ public class MainActivity extends ListActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.action_sync && account != null) {
+
+			Bundle params = new Bundle();
+			params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+			params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+
+			ContentResolver.requestSync(account, TodoContentProvider.AUTHORITY,
+					params);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	private void fillData() {
