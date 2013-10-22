@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 
     <application
         android:allowBackup="true"
@@ -22,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".authenticator.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:resource="@xml/authenticator" android:name="android.accounts.AccountAuthenticator"/>
+        </service>
+        <activity android:name=".authenticator.LoginActivity" android:excludeFromRecents="true" android:exported="true" android:theme="@android:style/Theme.Holo"></activity>
     </application>
 
 </manifest>

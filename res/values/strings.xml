@@ -4,5 +4,11 @@
     <string name="app_name">Sync Sample</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="label_username">Username:</string>
+    <string name="label_password">Password:</string>
+    <string name="label_login">Login</string>
+    <string name="msg_empty_username">Please enter your username</string>
+    <string name="msg_login_failed">The username or password isn\'t valid</string>
+    <string name="msg_authenticating">Authenticating...</string>
 
 </resources>
