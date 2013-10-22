@@ -37,6 +37,7 @@
             </intent-filter>
             <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/syncadapter"/>
         </service>
+        <provider android:syncable="true" android:name=".content.TodoContentProvider" android:label="@string/app_name" android:authorities="de.bit.android.syncsample.content"></provider>
     </application>
 
 </manifest>

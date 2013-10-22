@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import de.bit.android.syncsample.R;
+import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.rest.AuthenticationResultHandler;
 import de.bit.android.syncsample.rest.RestClientCredentials;
 import de.bit.android.syncsample.rest.TodoRestClient;
@@ -27,7 +28,7 @@ import de.bit.android.syncsample.rest.TodoRestClient;
 public class LoginActivity extends AccountAuthenticatorActivity implements
 		AuthenticationResultHandler {
 
-	private static final String CONTENT_AUTHORITY = "com.android.contacts";
+	private static final String CONTENT_AUTHORITY = TodoContentProvider.AUTHORITY;
 	private static final String ACCOUNT_TYPE = "de.bit.android.sample.account";
 	public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 
