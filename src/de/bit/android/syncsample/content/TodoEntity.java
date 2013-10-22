@@ -1,5 +1,8 @@
 package de.bit.android.syncsample.content;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.ContentValues;
 
 public class TodoEntity {
@@ -61,6 +64,21 @@ public class TodoEntity {
 		values.put(SERVER_VERSION, serverVersion);
 		values.put(TITLE, title);
 		return values;
+	}
+
+	public static TodoEntity fromJSON(JSONObject jsonObject)
+			throws JSONException {
+		if (jsonObject == null) {
+			return null;
+		}
+
+		TodoEntity entity = new TodoEntity();
+
+		entity.setServerId(jsonObject.getLong("id"));
+		entity.setServerVersion(jsonObject.getLong("version"));
+		entity.setTitle(jsonObject.getString("title"));
+
+		return entity;
 	}
 
 }
