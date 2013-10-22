@@ -6,6 +6,7 @@ import android.accounts.Account;
 import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -129,6 +130,8 @@ public class LoginActivity extends AccountAuthenticatorActivity implements
 		AccountManager accountManager = AccountManager.get(this);
 		accountManager.addAccountExplicitly(newAccount, password, null);
 
+		configureSync(newAccount);
+
 		Intent i = new Intent();
 		i.putExtra(AccountManager.KEY_ACCOUNT_NAME, userName);
 		i.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
@@ -139,6 +142,10 @@ public class LoginActivity extends AccountAuthenticatorActivity implements
 		this.setResult(RESULT_OK, i);
 
 		finish();
+	}
+
+	private void configureSync(Account account) {
+		ContentResolver.setIsSyncable(account, "com.android.contacts", 1);
 	}
 
 }
