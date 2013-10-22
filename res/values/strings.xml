@@ -10,5 +10,6 @@
     <string name="msg_empty_username">Please enter your username</string>
     <string name="msg_login_failed">The username or password isn\'t valid</string>
     <string name="msg_authenticating">Authenticating...</string>
+    <string name="no_todos">No todos found</string>
 
 </resources>

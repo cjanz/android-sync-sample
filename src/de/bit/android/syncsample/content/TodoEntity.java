@@ -59,7 +59,6 @@ public class TodoEntity {
 
 	public ContentValues toContentValues() {
 		ContentValues values = new ContentValues();
-		values.put(ID, id);
 		values.put(SERVER_ID, serverId);
 		values.put(SERVER_VERSION, serverVersion);
 		values.put(TITLE, title);
