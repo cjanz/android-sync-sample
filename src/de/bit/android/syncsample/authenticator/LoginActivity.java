@@ -27,6 +27,7 @@ import de.bit.android.syncsample.rest.TodoRestClient;
 public class LoginActivity extends AccountAuthenticatorActivity implements
 		AuthenticationResultHandler {
 
+	private static final String CONTENT_AUTHORITY = "com.android.contacts";
 	private static final String ACCOUNT_TYPE = "de.bit.android.sample.account";
 	public static final String PARAM_AUTHTOKEN_TYPE = "authtokenType";
 
@@ -145,7 +146,16 @@ public class LoginActivity extends AccountAuthenticatorActivity implements
 	}
 
 	private void configureSync(Account account) {
-		ContentResolver.setIsSyncable(account, "com.android.contacts", 1);
+		ContentResolver.setIsSyncable(account, CONTENT_AUTHORITY, 1);
+		ContentResolver.setSyncAutomatically(account, CONTENT_AUTHORITY, true);
+
+		Bundle params = new Bundle();
+		params.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, false);
+		params.putBoolean(ContentResolver.SYNC_EXTRAS_DO_NOT_RETRY, false);
+		params.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, false);
+		ContentResolver.addPeriodicSync(account, CONTENT_AUTHORITY, params, 60);
+
+		ContentResolver.requestSync(account, CONTENT_AUTHORITY, params);
 	}
 
 }
