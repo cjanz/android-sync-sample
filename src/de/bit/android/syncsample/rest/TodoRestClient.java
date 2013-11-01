@@ -41,6 +41,8 @@ public class TodoRestClient {
 				+ ":8080/syncsample-backend/rest/todo");
 		HttpURLConnection urlConnection = (HttpURLConnection) url
 				.openConnection();
+		urlConnection.setReadTimeout(TIMEOUT);
+		urlConnection.setConnectTimeout(TIMEOUT);
 		try {
 			String json = convertStreamToString(urlConnection.getInputStream());
 
