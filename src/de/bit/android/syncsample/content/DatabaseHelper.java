@@ -29,8 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + TodoEntity.TABLE_NAME + " (" //
 				+ TodoEntity.ID + " INTEGER PRIMARY KEY," //
 				+ TodoEntity.SERVER_ID + " LONG," //
-				+ TodoEntity.SERVER_VERSION + "SERVER_VERSION LONG," //
-				+ TodoEntity.TITLE + "TITLE TEXT" //
+				+ TodoEntity.SERVER_VERSION + " LONG," //
+				+ TodoEntity.TITLE + " TEXT" //
 				+ ");");
 	}
 
