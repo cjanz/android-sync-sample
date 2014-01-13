@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+  <!-- see http://tomee.apache.org/containers-and-resources.html -->
+  
+  <Resource id="syncsample" type="DataSource">
+    JdbcDriver   org.h2.Driver
+    JdbcUrl  jdbc:h2:mem:"syncsample";DB_CLOSE_DELAY=-1
+    UserName     sa
+    Password     sa
+	JtaManaged true
+  </Resource>
+</tomee>
