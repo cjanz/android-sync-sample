@@ -24,6 +24,11 @@ public class TodoResource {
 
 	@GET
 	public List<TodoEntity> getTodos() {
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return todoRepository.getTodos();
 	}
 

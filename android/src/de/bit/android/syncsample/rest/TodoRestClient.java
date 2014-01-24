@@ -18,7 +18,7 @@ import de.bit.android.syncsample.content.TodoEntity;
 public class TodoRestClient {
 
 	private static final String BACKEND_HOST = "10.0.2.2";
-	public static final int TIMEOUT = 3 * 1000; // ms
+	public static final int TIMEOUT = 6 * 1000; // ms
 
 	public static Thread attemptAuth(final RestClientCredentials account,
 			final Handler handler, final AuthenticationResultHandler context) {

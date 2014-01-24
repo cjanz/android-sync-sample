@@ -1,6 +1,11 @@
 package de.bit.android.syncsample;
 
-import static de.bit.android.syncsample.authenticator.LoginActivity.*;
+import static android.content.ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
+import static android.content.ContentResolver.SYNC_OBSERVER_TYPE_PENDING;
+import static android.content.ContentResolver.isSyncActive;
+import static android.content.ContentResolver.isSyncPending;
+import static android.view.Window.FEATURE_INDETERMINATE_PROGRESS;
+import static de.bit.android.syncsample.authenticator.LoginActivity.ACCOUNT_TYPE;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.ListActivity;
@@ -8,6 +13,7 @@ import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,14 +28,17 @@ import de.bit.android.syncsample.content.TodoEntity;
  * @see {@link TodoContentProvider}
  */
 public class MainActivity extends ListActivity implements
-		LoaderManager.LoaderCallbacks<Cursor> {
+		LoaderManager.LoaderCallbacks<Cursor>, SyncStatusObserver {
 
 	private SimpleCursorAdapter adapter;
 	private Account account;
+	
+	private Object syncObserverHandle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 
 		Account[] accounts = AccountManager.get(this).getAccountsByType(
@@ -39,6 +48,24 @@ public class MainActivity extends ListActivity implements
 		}
 
 		fillData();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		updateProgressBarVisibility();
+		syncObserverHandle = ContentResolver.addStatusChangeListener(
+				SYNC_OBSERVER_TYPE_ACTIVE | SYNC_OBSERVER_TYPE_PENDING, this);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		if (syncObserverHandle != null) {
+			ContentResolver.removeStatusChangeListener(syncObserverHandle);
+		}
 	}
 
 	@Override
@@ -98,6 +125,30 @@ public class MainActivity extends ListActivity implements
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// data is not available anymore, delete reference
 		adapter.swapCursor(null);
+	}
+
+	@Override
+	public void onStatusChanged(int which) {
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				updateProgressBarVisibility();
+			}
+		});
+	}
+
+	private void updateProgressBarVisibility() {
+		if (account == null) {
+			setProgressBarIndeterminateVisibility(false);
+			return;
+		}
+
+		boolean isSyncActive = isSyncActive(account,
+				TodoContentProvider.AUTHORITY)
+				| isSyncPending(account, TodoContentProvider.AUTHORITY);
+		setProgressBarIndeterminateVisibility(isSyncActive);
+
 	}
 
 }
