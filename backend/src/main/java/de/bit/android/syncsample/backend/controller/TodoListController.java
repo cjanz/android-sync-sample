@@ -1,5 +1,8 @@
 package de.bit.android.syncsample.backend.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -8,30 +11,22 @@ import javax.inject.Named;
 import de.bit.android.syncsample.backend.domain.TodoEntity;
 import de.bit.android.syncsample.backend.persistence.TodoRepository;
 
-@RequestScoped
 @Named
-public class CreateTodoController {
-
-	private TodoEntity todo;
+@RequestScoped
+public class TodoListController {
 
 	@Inject
 	private TodoRepository todoRepository;
 
+	private List<TodoEntity> todos = new ArrayList<>();
+
 	@PostConstruct
 	public void init() {
-		todo = new TodoEntity();
+		todos = todoRepository.getTodos();
 	}
 
-	public TodoEntity getTodo() {
-		return todo;
-	}
-
-	public String createTodo() {
-
-		todoRepository.saveTodo(todo);
-		init();
-
-		return "index";
+	public List<TodoEntity> getTodos() {
+		return todos;
 	}
 
 }

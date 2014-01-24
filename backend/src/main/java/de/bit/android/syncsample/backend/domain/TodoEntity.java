@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class TodoEntity {
@@ -15,8 +17,11 @@ public class TodoEntity {
 	@Version
 	private Long version;
 
+	@NotNull
+	@Size(min=1, max=50)
 	private String title;
 
+	@NotNull
 	private String text;
 
 	public Long getId() {

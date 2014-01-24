@@ -3,15 +3,16 @@ package de.bit.android.syncsample.backend.domain;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.inject.Inject;
+
+import de.bit.android.syncsample.backend.persistence.TodoRepository;
 
 @Singleton
 @Startup
 public class TestDataGenerator {
 
-	@PersistenceContext
-	private EntityManager em;
+	@Inject
+	private TodoRepository todoRepository;
 
 	@PostConstruct
 	public void createTestData() {
@@ -20,12 +21,8 @@ public class TestDataGenerator {
 			todo.setTitle("Todo: " + i);
 			todo.setText("Lorem Ipsum");
 
-			saveTodo(todo);
+			todoRepository.saveTodo(todo);
 		}
-	}
-
-	public void saveTodo(TodoEntity todo) {
-		em.persist(todo);
 	}
 
 }

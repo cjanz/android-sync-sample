@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<ui:composition template="template/template.xhtml">
+		<ui:define name="body">
+			<h2>My Todos</h2>
+			
+			<ui:repeat var="todo" value="#{todoListController.todos}">
+				<div>
+					<h3><h:outputText value="#{todo.title}" /></h3>
+					<p><h:outputText value="#{todo.text}" /></p> 
+				</div>
+			</ui:repeat>
+
+			<a href="createTodo.xhtml">Create Todo</a>
+		</ui:define>
+	</ui:composition>
+</html>

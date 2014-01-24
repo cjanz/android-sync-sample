@@ -4,24 +4,28 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<h:head></h:head>
-<body>
-	<h:form>
-		<table>
-			<tr>
-				<td>Title</td>
-				<td><h:inputText value="#{createTodoController.todo.title}" /></td>
-			</tr>
-			<tr>
-				<td>Text</td>
-				<td><h:inputTextarea value="#{createTodoController.todo.text}" /></td>
-			</tr>
-
-			<tr>
-				<td><h:commandButton
-						action="#{createTodoController.createTodo()}" value="Save" /></td>
-			</tr>
-		</table>
-	</h:form>
-</body>
+	<ui:composition template="template/template.xhtml">
+		<ui:define name="body">
+			<h:form>
+				<table>
+					<tr>
+						<td>Title</td>
+						<td><h:inputText label="Title" id="title" value="#{createTodoController.todo.title}" /></td>
+						<td><h:message for="title"/></td>
+					</tr>
+					<tr>
+						<td>Text</td>
+						<td><h:inputTextarea label="Text" id="text" value="#{createTodoController.todo.text}" /></td>
+						<td><h:message for="text"/></td>
+					</tr>
+	
+					<tr>
+						<td><h:button value="Cancel" outcome="index" /></td>
+						<td><h:commandButton
+								action="#{createTodoController.createTodo()}" value="Save" /></td>
+					</tr>
+				</table>
+			</h:form>
+		</ui:define>
+	</ui:composition>
 </html>
