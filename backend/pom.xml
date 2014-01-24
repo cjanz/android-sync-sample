@@ -8,10 +8,29 @@
 
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
-  		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<querydsl.version>3.3.0</querydsl.version>
 	</properties>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/java</outputDirectory>
+							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -20,6 +39,25 @@
 			<artifactId>javaee-api</artifactId>
 			<version>6.0-4</version>
 			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -33,4 +71,5 @@
 			<version>1.8.5</version>
 		</dependency>
 	</dependencies>
+
 </project>

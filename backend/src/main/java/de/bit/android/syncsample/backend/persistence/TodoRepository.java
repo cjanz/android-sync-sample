@@ -1,12 +1,14 @@
 package de.bit.android.syncsample.backend.persistence;
 
+import static de.bit.android.syncsample.backend.domain.QTodoEntity.todoEntity;
+
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+
+import com.mysema.query.jpa.impl.JPAQuery;
 
 import de.bit.android.syncsample.backend.domain.TodoEntity;
 
@@ -17,13 +19,12 @@ public class TodoRepository {
 	private EntityManager em;
 
 	public List<TodoEntity> getTodos() {
-		CriteriaQuery<TodoEntity> query = em.getCriteriaBuilder().createQuery(
-				TodoEntity.class);
-		Root<TodoEntity> root = query.from(TodoEntity.class);
-		query.select(root);
+		return query().from(todoEntity).orderBy(todoEntity.title.asc())
+				.list(todoEntity);
+	}
 
-		List<TodoEntity> todos = em.createQuery(query).getResultList();
-		return todos;
+	private JPAQuery query() {
+		return new JPAQuery(em);
 	}
 
 	public void saveTodo(TodoEntity todo) {
