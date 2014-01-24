@@ -7,11 +7,12 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
+
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
 
     <application
         android:allowBackup="true"
@@ -27,20 +28,45 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".authenticator.AuthenticatorService">
+
+        <service android:name="de.bit.android.syncsample.authenticator.AuthenticatorService" >
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
+                <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-            <meta-data android:resource="@xml/authenticator" android:name="android.accounts.AccountAuthenticator"/>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
         </service>
-        <activity android:name=".authenticator.LoginActivity" android:excludeFromRecents="true" android:exported="true" android:theme="@android:style/Theme.Holo"></activity>
-        <service android:name=".sync.SyncService">
+
+        <activity
+            android:name="de.bit.android.syncsample.authenticator.LoginActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.Holo" >
+        </activity>
+
+        <service android:name="de.bit.android.syncsample.sync.SyncService" >
             <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
+                <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/syncadapter"/>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
         </service>
-        <provider android:syncable="true" android:name=".content.TodoContentProvider" android:label="@string/app_name" android:authorities="de.bit.android.syncsample.content"></provider>
+
+        <provider
+            android:name="de.bit.android.syncsample.content.TodoContentProvider"
+            android:authorities="de.bit.android.syncsample.content"
+            android:label="@string/app_name"
+            android:syncable="true" >
+        </provider>
+
+        <activity
+            android:name="de.bit.android.syncsample.EditTodoActivity"
+            android:label="@string/title_activity_edit_todo" >
+        </activity>
     </application>
 
 </manifest>

@@ -12,12 +12,15 @@ import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
@@ -32,7 +35,7 @@ public class MainActivity extends ListActivity implements
 
 	private SimpleCursorAdapter adapter;
 	private Account account;
-	
+
 	private Object syncObserverHandle;
 
 	@Override
@@ -58,11 +61,11 @@ public class MainActivity extends ListActivity implements
 		syncObserverHandle = ContentResolver.addStatusChangeListener(
 				SYNC_OBSERVER_TYPE_ACTIVE | SYNC_OBSERVER_TYPE_PENDING, this);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		if (syncObserverHandle != null) {
 			ContentResolver.removeStatusChangeListener(syncObserverHandle);
 		}
@@ -86,6 +89,9 @@ public class MainActivity extends ListActivity implements
 			ContentResolver.requestSync(account, TodoContentProvider.AUTHORITY,
 					params);
 			return true;
+		} else if (item.getItemId() == R.id.action_create) {
+			
+			openEditActivity(null);
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -125,6 +131,19 @@ public class MainActivity extends ListActivity implements
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// data is not available anymore, delete reference
 		adapter.swapCursor(null);
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+
+		openEditActivity(id);
+	}
+
+	private void openEditActivity(Long id) {
+		Intent intent = new Intent(this, EditTodoActivity.class);
+		intent.putExtra(EditTodoActivity.EXTRA_ID, id);
+		startActivity(intent);
 	}
 
 	@Override
