@@ -27,8 +27,23 @@ public class TodoRepository {
 		return new JPAQuery(em);
 	}
 
-	public void saveTodo(TodoEntity todo) {
+	public TodoEntity saveTodo(TodoEntity todo) {
+		if (todo.getId() != null) {
+			todo = em.merge(todo);
+		}
 		em.persist(todo);
+		return todo;
+	}
+
+	public void deleteTodo(Long id) {
+		TodoEntity entity = findOne(id);
+		if (entity != null) {
+			em.remove(entity);
+		}
+	}
+
+	public TodoEntity findOne(Long id) {
+		return em.find(TodoEntity.class, id);
 	}
 
 }
