@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
+import de.bit.android.syncsample.content.TodoEntity.SyncState;
 import de.bit.android.syncsample.rest.TodoRestClient;
 
 /**
@@ -44,7 +45,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 			// get Todos from local DB
 			Cursor cursor = provider.query(CONTENT_URI, new String[] {
-					TodoEntity.ID, TodoEntity.SERVER_ID }, null, null,
+					TodoEntity.ID, TodoEntity.SERVER_ID, TodoEntity.SYNC_STATE }, null, null,
 					TodoEntity.SERVER_ID);
 
 			for (boolean more = cursor.moveToFirst(); more; more = cursor
@@ -54,15 +55,19 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 						.getColumnIndexOrThrow(TodoEntity.SERVER_ID));
 				long internalId = cursor.getLong(cursor
 						.getColumnIndexOrThrow(TodoEntity.ID));
+				String syncState = cursor.getString(cursor
+						.getColumnIndexOrThrow(TodoEntity.SYNC_STATE));
 				Uri uri = TodoContentProvider.getUri(internalId);
 
 				if (serverIdIndex.containsKey(serverId)) {
 					TodoEntity todo = serverIdIndex.remove(serverId);
 
-					// Backend + Local DB --> Update
-					provider.update(uri, todo.toContentValues(), null, null);
-				} else {
-					// Only local DB --> Delete
+					// Backend + Local DB w/o changes --> Update
+					if (SyncState.NOOP.name().equals(syncState)) {
+						provider.update(uri, todo.toContentValues(), null, null);
+					}
+				} else if (!SyncState.CREATE.name().equals(syncState)) {
+					// Only local DB and not a new record --> Delete
 					provider.delete(uri, null, null);
 				}
 			}
