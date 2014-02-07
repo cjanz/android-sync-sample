@@ -5,24 +5,30 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 	<ui:composition template="template/template.xhtml">
+		<ui:define name="metadata">
+			<f:metadata>
+				<f:viewParam name="id" value="#{editTodoController.todoId}" />
+			</f:metadata>
+		</ui:define>
+	
 		<ui:define name="body">
 			<h:form>
 				<table>
 					<tr>
 						<td>Title</td>
-						<td><h:inputText label="Title" id="title" value="#{createTodoController.todo.title}" /></td>
+						<td><h:inputText label="Title" id="title" value="#{editTodoController.todo.title}" /></td>
 						<td><h:message for="title"/></td>
 					</tr>
 					<tr>
 						<td>Text</td>
-						<td><h:inputTextarea label="Text" id="text" value="#{createTodoController.todo.text}" /></td>
+						<td><h:inputTextarea label="Text" id="text" value="#{editTodoController.todo.text}" /></td>
 						<td><h:message for="text"/></td>
 					</tr>
 	
 					<tr>
 						<td><h:button value="Cancel" outcome="index" /></td>
 						<td><h:commandButton
-								action="#{createTodoController.createTodo()}" value="Save" /></td>
+								action="#{editTodoController.saveTodo()}" value="Save" /></td>
 					</tr>
 				</table>
 			</h:form>

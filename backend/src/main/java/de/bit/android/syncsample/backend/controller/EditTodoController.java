@@ -10,9 +10,11 @@ import de.bit.android.syncsample.backend.persistence.TodoRepository;
 
 @RequestScoped
 @Named
-public class CreateTodoController {
+public class EditTodoController {
 
 	private TodoEntity todo;
+
+	private Long todoId;
 
 	@Inject
 	private TodoRepository todoRepository;
@@ -22,16 +24,30 @@ public class CreateTodoController {
 		todo = new TodoEntity();
 	}
 
+	private void loadTodo() {
+		if (todoId != null) {
+			todo = todoRepository.findOne(todoId);
+		}
+	}
+
 	public TodoEntity getTodo() {
 		return todo;
 	}
 
-	public String createTodo() {
+	public String saveTodo() {
 
 		todoRepository.saveTodo(todo);
-		init();
 
-		return "index";
+		return "index?faces-redirect=true";
+	}
+
+	public Long getTodoId() {
+		return todoId;
+	}
+
+	public void setTodoId(Long todoId) {
+		this.todoId = todoId;
+		loadTodo();
 	}
 
 }

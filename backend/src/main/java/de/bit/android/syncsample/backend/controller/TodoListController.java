@@ -28,5 +28,11 @@ public class TodoListController {
 	public List<TodoEntity> getTodos() {
 		return todos;
 	}
+	
+	public String deleteTodo(TodoEntity todo) {
+		todoRepository.deleteTodo(todo.getId());
+		
+		return "index?faces-redirect=true";
+	}
 
 }

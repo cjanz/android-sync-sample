@@ -7,15 +7,26 @@
 	<ui:composition template="template/template.xhtml">
 		<ui:define name="body">
 			<h2>My Todos</h2>
-			
+			<h:form>
 			<ui:repeat var="todo" value="#{todoListController.todos}">
-				<div>
+				<div class="row">
+				<div style="float:left">
 					<h3><h:outputText value="#{todo.title}" /></h3>
 					<p><h:outputText value="#{todo.text}" /></p> 
 				</div>
+				<div class="buttons" style="float: left">
+					<h:link value="Edit" outcome="editTodo">
+						<f:param name="id" value="#{todo.id}" /> 
+					</h:link>
+					<h:commandLink value="Delete" action="#{todoListController.deleteTodo(todo)}" />
+				</div>
+				</div>
 			</ui:repeat>
+			</h:form>
 
-			<a href="createTodo.xhtml">Create Todo</a>
+			<div style="clear: both">
+				<a href="editTodo.xhtml">Create Todo</a>
+			</div>
 		</ui:define>
 	</ui:composition>
 </html>

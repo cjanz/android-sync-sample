@@ -24,12 +24,30 @@ body {
 	vertical-align: middle;
 	color: #8E969D;
 }
+
+.row {
+	clear: both;
+}
+
+.row div.buttons {
+	margin-left:20px;
+	padding-top: 20px;
+}
+
+.buttons a {
+	margin: 4px;
+}
+
 </style>
 </head>
 
 <body>
-	<h1>Android Sync Sample Backend</h1>
-	<ui:insert name="body"></ui:insert>
+	<f:view>
+		<ui:insert name="metadata"/>   
+
+		<h1>Android Sync Sample Backend</h1>
+		<ui:insert name="body"></ui:insert>
+	</f:view>
 </body>
 
 </html>
