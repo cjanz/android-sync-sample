@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.json.JSONArray;
@@ -61,7 +62,8 @@ public class TodoRestClient {
 	public static TodoEntity saveTodo(TodoEntity todoEntity)
 			throws IOException, JSONException {
 
-		HttpURLConnection urlConnection = openConnection(getBackendUrl(todoEntity.getServerId()), true);
+		HttpURLConnection urlConnection = openConnection(
+				getBackendUrl(todoEntity.getServerId()), true);
 		if (todoEntity.getServerId() == null) {
 			urlConnection.setRequestMethod(HttpPost.METHOD_NAME);
 		} else {
@@ -76,6 +78,20 @@ public class TodoRestClient {
 			String json = readStringFromStreamString(urlConnection
 					.getInputStream());
 			return TodoEntity.fromJSON(new JSONObject(json));
+		} finally {
+			urlConnection.disconnect();
+		}
+	}
+
+	public static void deleteTodo(TodoEntity todoEntity) throws IOException {
+
+		HttpURLConnection urlConnection = openConnection(
+				getBackendUrl(todoEntity.getServerId()), false);
+		urlConnection.setRequestMethod(HttpDelete.METHOD_NAME);
+
+		try {
+			readStringFromStreamString(urlConnection
+					.getInputStream());
 		} finally {
 			urlConnection.disconnect();
 		}
@@ -98,14 +114,15 @@ public class TodoRestClient {
 		return urlConnection;
 	}
 
-	private static URL getBackendUrl(Long serverId) throws MalformedURLException {
+	private static URL getBackendUrl(Long serverId)
+			throws MalformedURLException {
 		URL backendUrl = getBackendUrl();
 		if (serverId != null) {
 			backendUrl = new URL(backendUrl, String.valueOf(serverId));
 		}
 		return backendUrl;
 	}
-	
+
 	private static URL getBackendUrl() throws MalformedURLException {
 		URL url = new URL("http://" + BACKEND_HOST
 				+ ":8080/syncsample-backend/rest/todo/");

@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import de.bit.android.syncsample.content.TodoContentProvider;
@@ -62,6 +63,30 @@ public class EditTodoActivity extends Activity {
 		getMenuInflater().inflate(R.menu.edit_todo, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		if (item.getItemId() == R.id.action_delete) {
+			delete();
+		}
+		
+		return true;
+	}
+
+	private void delete() {
+		Long recordId = getRecordId();
+		
+		if (recordId != null) {
+			ContentValues values = new ContentValues();
+			values.put(TodoEntity.SYNC_STATE, SyncState.REMOVE.name());
+			getContentResolver().update(TodoContentProvider.getUri(recordId),
+					values, null, null);
+			
+			requestUpload();
+			finish();
+		}
+	}
 
 	public void cancel(View view) {
 		finish();
@@ -84,13 +109,17 @@ public class EditTodoActivity extends Activity {
 					.insert(TodoContentProvider.CONTENT_URI, values);
 		}
 
+		requestUpload();
+		finish();
+	}
+
+	private void requestUpload() {
 		Bundle extras = new Bundle();
 		extras.putBoolean(ContentResolver.SYNC_EXTRAS_UPLOAD, true);
 		extras.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		
 		ContentResolver.requestSync(getDefaultAccount(this),
 				TodoContentProvider.AUTHORITY, extras);
-
-		finish();
 	}
 
 }

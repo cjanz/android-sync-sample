@@ -23,6 +23,7 @@ import android.widget.SimpleCursorAdapter;
 import de.bit.android.syncsample.authenticator.Authenticator;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
+import de.bit.android.syncsample.content.TodoEntity.SyncState;
 
 /**
  * {@link ListActivity} that display the Todos from the local ContentProvider.
@@ -85,7 +86,7 @@ public class MainActivity extends ListActivity implements
 					params);
 			return true;
 		} else if (item.getItemId() == R.id.action_create) {
-			
+
 			openEditActivity(null);
 		}
 
@@ -112,8 +113,10 @@ public class MainActivity extends ListActivity implements
 		String[] projection = { TodoEntity.ID, TodoEntity.TITLE };
 
 		CursorLoader cursorLoader = new CursorLoader(this,
-				TodoContentProvider.CONTENT_URI, projection, null, null,
-				TodoEntity.TITLE + " COLLATE NOCASE ASC");
+				TodoContentProvider.CONTENT_URI, projection,
+				TodoEntity.SYNC_STATE + " != ?",
+				new String[] { SyncState.REMOVE.name() }, TodoEntity.TITLE
+						+ " COLLATE NOCASE ASC");
 		return cursorLoader;
 	}
 

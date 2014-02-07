@@ -46,7 +46,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		Log.d(TAG, "Sync started");
 
 		syncChangedRecordsToBackend(provider, syncResult);
-
+		syncDeletedRecordsToBackend(provider,  syncResult);
+		
 		if (!extras.getBoolean(ContentResolver.SYNC_EXTRAS_UPLOAD)) {
 			syncBackendToLocalDB(provider, syncResult);
 		}
@@ -85,6 +86,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			}
 		} catch (Exception e) {
 			Log.w(TAG, "Error writing changed records to backend", e);
+			syncResult.stats.numIoExceptions++;
+		}
+	}
+
+	private void syncDeletedRecordsToBackend(ContentProviderClient provider,
+			SyncResult syncResult) {
+		try {
+			Cursor deletedRecordsCursor = provider.query(CONTENT_URI, null,
+					TodoEntity.SYNC_STATE + " = ?",
+					new String[] { SyncState.REMOVE.name() },
+					TodoEntity.SERVER_ID);
+
+			for (boolean more = deletedRecordsCursor.moveToFirst(); more; more = deletedRecordsCursor
+					.moveToNext()) {
+				TodoEntity todoEntity = TodoEntity
+						.fromCursor(deletedRecordsCursor);
+				Long id = todoEntity.getId();
+				Uri localrecordUri = TodoContentProvider.getUri(id);
+
+				TodoRestClient.deleteTodo(todoEntity);
+				provider.delete(localrecordUri, null, null);
+			}
+		} catch (Exception e) {
+			Log.w(TAG, "Error writing deleted records to backend", e);
 			syncResult.stats.numIoExceptions++;
 		}
 	}
