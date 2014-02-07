@@ -5,9 +5,7 @@ import static android.content.ContentResolver.SYNC_OBSERVER_TYPE_PENDING;
 import static android.content.ContentResolver.isSyncActive;
 import static android.content.ContentResolver.isSyncPending;
 import static android.view.Window.FEATURE_INDETERMINATE_PROGRESS;
-import static de.bit.android.syncsample.authenticator.LoginActivity.ACCOUNT_TYPE;
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
@@ -22,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import de.bit.android.syncsample.authenticator.Authenticator;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
 
@@ -44,11 +43,7 @@ public class MainActivity extends ListActivity implements
 		requestWindowFeature(FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 
-		Account[] accounts = AccountManager.get(this).getAccountsByType(
-				ACCOUNT_TYPE);
-		if (accounts.length > 0) {
-			account = accounts[0];
-		}
+		account = Authenticator.getDefaultAccount(this);
 
 		fillData();
 	}

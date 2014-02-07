@@ -4,13 +4,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 public class TodoEntity {
 
 	public enum SyncState {
-        NOOP, CREATE, UPDATE, REMOVE
-    }
-	
+		NOOP, CREATE, UPDATE, REMOVE
+	}
+
 	static final String TABLE_NAME = "TODO";
 
 	public static final String SERVER_VERSION = "SERVER_VERSION";
@@ -18,11 +19,11 @@ public class TodoEntity {
 	public static final String SERVER_ID = "SERVER_ID";
 
 	public static final String TITLE = "TITLE";
-	
+
 	public static final String TEXT = "TODO_TEXT";
 
 	public static final String ID = "_id";
-	
+
 	public static final String SYNC_STATE = "SYNC_STATE";
 
 	private Long id;
@@ -32,9 +33,9 @@ public class TodoEntity {
 	private Long serverVersion;
 
 	private String title;
-	
+
 	private String text;
-	
+
 	private SyncState syncState = SyncState.NOOP;
 
 	public Long getId() {
@@ -68,7 +69,7 @@ public class TodoEntity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public String getText() {
 		return text;
 	}
@@ -83,16 +84,6 @@ public class TodoEntity {
 
 	public void setSyncState(SyncState syncState) {
 		this.syncState = syncState;
-	}
-
-	public ContentValues toContentValues() {
-		ContentValues values = new ContentValues();
-		values.put(SERVER_ID, serverId);
-		values.put(SERVER_VERSION, serverVersion);
-		values.put(TITLE, title);
-		values.put(TEXT, text);
-		values.put(SYNC_STATE, syncState.name());
-		return values;
 	}
 
 	public static TodoEntity fromJSON(JSONObject jsonObject)
@@ -110,6 +101,50 @@ public class TodoEntity {
 		entity.setSyncState(SyncState.NOOP);
 
 		return entity;
+	}
+	
+	public String toJSON() throws JSONException {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("id", serverId);
+		jsonObject.put("version", serverVersion);
+		jsonObject.put("title", title);
+		jsonObject.put("text", text);
+		return jsonObject.toString();
+	}
+
+	public static TodoEntity fromCursor(Cursor cursor) {
+		if (cursor == null) {
+			return null;
+		}
+
+		TodoEntity entity = new TodoEntity();
+
+		if (!cursor.isNull(cursor.getColumnIndexOrThrow(SERVER_ID))) {
+			entity.setServerId(cursor.getLong(cursor
+					.getColumnIndexOrThrow(SERVER_ID)));
+		}
+		if (!cursor.isNull(cursor.getColumnIndexOrThrow(SERVER_VERSION))) {
+			entity.setServerVersion(cursor.getLong(cursor
+					.getColumnIndexOrThrow(SERVER_VERSION)));
+		}
+
+		entity.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
+		entity.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
+		entity.setText(cursor.getString(cursor.getColumnIndexOrThrow(TEXT)));
+		entity.setSyncState(SyncState.valueOf(cursor.getString(cursor
+				.getColumnIndexOrThrow(SYNC_STATE))));
+
+		return entity;
+	}
+	
+	public ContentValues toContentValues() {
+		ContentValues values = new ContentValues();
+		values.put(SERVER_ID, serverId);
+		values.put(SERVER_VERSION, serverVersion);
+		values.put(TITLE, title);
+		values.put(TEXT, text);
+		values.put(SYNC_STATE, syncState.name());
+		return values;
 	}
 
 }

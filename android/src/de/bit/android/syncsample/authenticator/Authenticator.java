@@ -1,5 +1,6 @@
 package de.bit.android.syncsample.authenticator;
 
+import static de.bit.android.syncsample.authenticator.LoginActivity.ACCOUNT_TYPE;
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -79,6 +80,16 @@ public class Authenticator extends AbstractAccountAuthenticator {
 	public Bundle updateCredentials(AccountAuthenticatorResponse arg0,
 			Account arg1, String arg2, Bundle arg3)
 			throws NetworkErrorException {
+		return null;
+	}
+
+	public static Account getDefaultAccount(Context context) {
+		Account[] accounts = AccountManager.get(context).getAccountsByType(
+				ACCOUNT_TYPE);
+		if (accounts.length > 0) {
+			return accounts[0];
+		}
+
 		return null;
 	}
 

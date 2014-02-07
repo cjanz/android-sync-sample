@@ -1,6 +1,8 @@
 package de.bit.android.syncsample;
 
+import static de.bit.android.syncsample.authenticator.Authenticator.getDefaultAccount;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -81,7 +83,13 @@ public class EditTodoActivity extends Activity {
 			getContentResolver()
 					.insert(TodoContentProvider.CONTENT_URI, values);
 		}
-		
+
+		Bundle extras = new Bundle();
+		extras.putBoolean(ContentResolver.SYNC_EXTRAS_UPLOAD, true);
+		extras.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+		ContentResolver.requestSync(getDefaultAccount(this),
+				TodoContentProvider.AUTHORITY, extras);
+
 		finish();
 	}
 
