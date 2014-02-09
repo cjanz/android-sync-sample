@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 
 import com.mysema.query.jpa.impl.JPAQuery;
@@ -27,11 +28,16 @@ public class TodoRepository {
 		return new JPAQuery(em);
 	}
 
-	public TodoEntity saveTodo(TodoEntity todo) {
-		if (todo.getId() != null) {
-			todo = em.merge(todo);
+	public TodoEntity saveTodo(TodoEntity todo) throws UpdateConflictException {
+		try {
+			if (todo.getId() != null) {
+				todo = em.merge(todo);
+			}
+			em.persist(todo);
+		} catch (OptimisticLockException e) {
+			em.clear();
+			throw new UpdateConflictException(e);
 		}
-		em.persist(todo);
 		return todo;
 	}
 

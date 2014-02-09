@@ -22,10 +22,12 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import de.bit.android.syncsample.backend.domain.TodoEntity;
 import de.bit.android.syncsample.backend.persistence.TodoRepository;
+import de.bit.android.syncsample.backend.persistence.UpdateConflictException;
 
 @Stateless
 @Path("/todo")
@@ -87,8 +89,13 @@ public class TodoResource {
 			checkState(Objects.equals(id, todo.getId()), "IDs don't match");
 		}
 
-		TodoEntity savedTodo = todoRepository.saveTodo(todo);
-		return Response.ok(savedTodo).build();
+		try {
+			TodoEntity savedTodo = todoRepository.saveTodo(todo);
+			return Response.ok(savedTodo).build();
+		} catch (UpdateConflictException e) {
+			return Response.status(Status.CONFLICT)
+					.entity(todoRepository.findOne(todo.getId())).build();
+		}
 	}
 
 	@DELETE
