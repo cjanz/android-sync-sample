@@ -19,5 +19,7 @@
     <string name="save">Save</string>
     <string name="create">Create</string>
     <string name="action_delete">Delete</string>
-
+    <string name="conflictMessage">The Todo item has been changed on the server during your change.</string>
+	<string name="overwriteServer">Keep local changes</string>
+	<string name="overwriteLocal">Overwrite local changes</string>
 </resources>

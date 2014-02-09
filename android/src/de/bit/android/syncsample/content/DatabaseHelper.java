@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * The database version
 	 */
-	static final int DATABASE_VERSION = 2;
+	static final int DATABASE_VERSION = 3;
 
 	DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -30,6 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				+ TodoEntity.ID + " INTEGER PRIMARY KEY," //
 				+ TodoEntity.SERVER_ID + " LONG," //
 				+ TodoEntity.SERVER_VERSION + " LONG," //
+				+ TodoEntity.CONFLICT_SERVER_VERSION + " LONG," //
 				+ TodoEntity.TITLE + " TEXT," //
 				+ TodoEntity.TEXT + " TEXT," //
 				+ TodoEntity.SYNC_STATE + " TEXT" //

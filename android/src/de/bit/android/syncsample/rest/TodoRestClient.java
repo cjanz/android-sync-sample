@@ -78,6 +78,13 @@ public class TodoRestClient {
 			String json = readStringFromStreamString(urlConnection
 					.getInputStream());
 			return TodoEntity.fromJSON(new JSONObject(json));
+		} catch (IOException e) {
+			if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_CONFLICT) {
+				TodoEntity conflictedEntity = TodoEntity.fromJSON(new JSONObject(readStringFromStreamString(urlConnection
+						.getErrorStream())));
+				throw new UpdateConflictException(conflictedEntity);
+			}
+			throw e;
 		} finally {
 			urlConnection.disconnect();
 		}

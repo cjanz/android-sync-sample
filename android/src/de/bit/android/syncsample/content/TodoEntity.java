@@ -9,12 +9,14 @@ import android.database.Cursor;
 public class TodoEntity {
 
 	public enum SyncState {
-		NOOP, CREATE, UPDATE, REMOVE
+		NOOP, CREATE, UPDATE, REMOVE, CONFLICTED
 	}
 
 	static final String TABLE_NAME = "TODO";
 
 	public static final String SERVER_VERSION = "SERVER_VERSION";
+
+	public static final String CONFLICT_SERVER_VERSION = "CONFLICT_SERVER_VERSION";
 
 	public static final String SERVER_ID = "SERVER_ID";
 
@@ -31,6 +33,8 @@ public class TodoEntity {
 	private Long serverId;
 
 	private Long serverVersion;
+
+	private Long conflictedServerVersion;
 
 	private String title;
 
@@ -60,6 +64,14 @@ public class TodoEntity {
 
 	public void setServerVersion(Long serverVersion) {
 		this.serverVersion = serverVersion;
+	}
+
+	public Long getConflictedServerVersion() {
+		return conflictedServerVersion;
+	}
+
+	public void setConflictedServerVersion(Long conflictedServerVersion) {
+		this.conflictedServerVersion = conflictedServerVersion;
 	}
 
 	public String getTitle() {
@@ -102,7 +114,7 @@ public class TodoEntity {
 
 		return entity;
 	}
-	
+
 	public String toJSON() throws JSONException {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("id", serverId);
@@ -127,6 +139,11 @@ public class TodoEntity {
 			entity.setServerVersion(cursor.getLong(cursor
 					.getColumnIndexOrThrow(SERVER_VERSION)));
 		}
+		if (!cursor.isNull(cursor
+				.getColumnIndexOrThrow(CONFLICT_SERVER_VERSION))) {
+			entity.setConflictedServerVersion(cursor.getLong(cursor
+					.getColumnIndexOrThrow(CONFLICT_SERVER_VERSION)));
+		}
 
 		entity.setId(cursor.getLong(cursor.getColumnIndexOrThrow(ID)));
 		entity.setTitle(cursor.getString(cursor.getColumnIndexOrThrow(TITLE)));
@@ -136,11 +153,12 @@ public class TodoEntity {
 
 		return entity;
 	}
-	
+
 	public ContentValues toContentValues() {
 		ContentValues values = new ContentValues();
 		values.put(SERVER_ID, serverId);
 		values.put(SERVER_VERSION, serverVersion);
+		values.put(CONFLICT_SERVER_VERSION, conflictedServerVersion);
 		values.put(TITLE, title);
 		values.put(TEXT, text);
 		values.put(SYNC_STATE, syncState.name());
