@@ -2,8 +2,10 @@ package de.bit.android.syncsample;
 
 import static de.bit.android.syncsample.authenticator.Authenticator.getDefaultAccount;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
@@ -139,6 +141,7 @@ public class EditTodoActivity extends Activity {
 			getContentResolver().update(TodoContentProvider.getUri(recordId),
 					values, null, null);
 
+			clearConflictNotification();
 			requestDownload();
 			finish();
 		}
@@ -155,7 +158,16 @@ public class EditTodoActivity extends Activity {
 			getContentResolver().update(TodoContentProvider.getUri(recordId),
 					values, null, null);
 
+			clearConflictNotification();
 			save(view);
+		}
+	}
+
+	private void clearConflictNotification() {
+		Long recordId = getRecordId();
+		if (recordId != null) {
+			NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(recordId.hashCode());
 		}
 	}
 
