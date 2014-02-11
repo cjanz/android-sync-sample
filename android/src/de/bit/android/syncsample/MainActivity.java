@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import de.bit.android.syncsample.authenticator.Authenticator;
 import de.bit.android.syncsample.content.TodoContentProvider;
 import de.bit.android.syncsample.content.TodoEntity;
@@ -32,6 +33,26 @@ import de.bit.android.syncsample.content.TodoEntity.SyncState;
  */
 public class MainActivity extends ListActivity implements
 		LoaderManager.LoaderCallbacks<Cursor>, SyncStatusObserver {
+
+	private final class TodoRowViewBinder implements
+			SimpleCursorAdapter.ViewBinder {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if (columnIndex == cursor.getColumnIndex(TodoEntity.SYNC_STATE)) {
+				SyncState syncState = SyncState.valueOf(cursor
+						.getString(columnIndex));
+				((TextView) view).setCompoundDrawablesWithIntrinsicBounds(
+						syncState.getIconId(), 0, 0, 0);
+				return true;
+			} else if (columnIndex == cursor.getColumnIndex(TodoEntity.TITLE)) {
+				((TextView) view).setText(cursor.getString(columnIndex));
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
 	private SimpleCursorAdapter adapter;
 	private Account account;
@@ -96,12 +117,13 @@ public class MainActivity extends ListActivity implements
 	private void fillData() {
 
 		// Bind column TITLE to field "label"
-		String[] from = new String[] { TodoEntity.TITLE };
-		int[] to = new int[] { R.id.label };
+		String[] from = new String[] { TodoEntity.SYNC_STATE, TodoEntity.TITLE };
+		int[] to = new int[] { R.id.label, R.id.label };
 
 		getLoaderManager().initLoader(0, null, this);
 		adapter = new SimpleCursorAdapter(this, R.layout.todo_row, null, from,
 				to, 0);
+		adapter.setViewBinder(new TodoRowViewBinder());
 
 		setListAdapter(adapter);
 	}
@@ -110,7 +132,7 @@ public class MainActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		// Fields from the database (projection)
 		// Must include the _id column for the adapter to work
-		String[] projection = { TodoEntity.ID, TodoEntity.TITLE };
+		String[] projection = { TodoEntity.ID, TodoEntity.SYNC_STATE, TodoEntity.TITLE };
 
 		CursorLoader cursorLoader = new CursorLoader(this,
 				TodoContentProvider.CONTENT_URI, projection,

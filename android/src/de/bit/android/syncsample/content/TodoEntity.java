@@ -1,5 +1,11 @@
 package de.bit.android.syncsample.content;
 
+import static android.R.drawable.ic_menu_add;
+import static android.R.drawable.ic_menu_delete;
+import static android.R.drawable.ic_dialog_alert;
+import static android.R.drawable.ic_menu_edit;
+import static android.R.drawable.ic_menu_more;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,7 +15,18 @@ import android.database.Cursor;
 public class TodoEntity {
 
 	public enum SyncState {
-		NOOP, CREATE, UPDATE, REMOVE, CONFLICTED
+		NOOP(ic_menu_more), CREATE(ic_menu_add), UPDATE(ic_menu_edit), REMOVE(
+				ic_menu_delete), CONFLICTED(ic_dialog_alert);
+
+		private final int iconId;
+
+		private SyncState(int iconId) {
+			this.iconId = iconId;
+		}
+
+		public int getIconId() {
+			return iconId;
+		}
 	}
 
 	static final String TABLE_NAME = "TODO";

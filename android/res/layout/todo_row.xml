@@ -11,6 +11,7 @@
         android:lines="1"
         android:text="@+id/TextView01"
         android:textSize="24sp" 
+        android:drawablePadding="12dp"
         >
     </TextView>
 
