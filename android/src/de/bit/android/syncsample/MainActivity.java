@@ -3,7 +3,6 @@ package de.bit.android.syncsample;
 import static android.content.ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE;
 import static android.content.ContentResolver.SYNC_OBSERVER_TYPE_PENDING;
 import static android.content.ContentResolver.isSyncActive;
-import static android.content.ContentResolver.isSyncPending;
 import static android.view.Window.FEATURE_INDETERMINATE_PROGRESS;
 import android.accounts.Account;
 import android.app.ListActivity;
@@ -132,7 +131,8 @@ public class MainActivity extends ListActivity implements
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		// Fields from the database (projection)
 		// Must include the _id column for the adapter to work
-		String[] projection = { TodoEntity.ID, TodoEntity.SYNC_STATE, TodoEntity.TITLE };
+		String[] projection = { TodoEntity.ID, TodoEntity.SYNC_STATE,
+				TodoEntity.TITLE };
 
 		CursorLoader cursorLoader = new CursorLoader(this,
 				TodoContentProvider.CONTENT_URI, projection,
@@ -184,8 +184,7 @@ public class MainActivity extends ListActivity implements
 		}
 
 		boolean isSyncActive = isSyncActive(account,
-				TodoContentProvider.AUTHORITY)
-				| isSyncPending(account, TodoContentProvider.AUTHORITY);
+				TodoContentProvider.AUTHORITY);
 		setProgressBarIndeterminateVisibility(isSyncActive);
 
 	}
